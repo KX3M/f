@@ -2,6 +2,7 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from motor.motor_asyncio import AsyncIOMotorClient
 import requests
+import asyncio  # Make sure this is imported at the top
 import time
 
 API_TOKEN = '7212402737:AAEyhlFTNXm9po5sDlssV8r-z9_Pqyi-mSg'
@@ -201,15 +202,27 @@ async def give_premium(message: types.Message):
 # Premium Plans Popup
 @dp.callback_query_handler(lambda c: c.data == "premium")
 async def buy_premium(query: types.CallbackQuery):
-    await query.message.reply_photo(
+    sent = await query.message.reply_photo(
         photo="https://graph.org/file/ac61481c6c90015545d83-6b573a858fa21d40c6.jpg",
         caption=message_content.format(first=query.from_user.mention),
-        reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton("Owner", url="https://t.me/metaui"),
-             InlineKeyboardButton("Channel", url="https://t.me/Pythonbotz")],
-            [InlineKeyboardButton("🔒 Close", callback_data="close")]
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [
+                InlineKeyboardButton("Owner", url="https://t.me/metaui"),
+                InlineKeyboardButton("Channel", url="https://t.me/Pythonbotz")
+            ],
+            [
+                InlineKeyboardButton("🔒 Close", callback_data="close")
+            ]
         ])
     )
+
+    # 🕒 Wait 60 seconds and auto-delete
+    await asyncio.sleep(60)
+    try:
+        await sent.delete()
+    except:
+        pass  # Ignore if already deleted manually
+
 
 # Close inline messages
 @dp.callback_query_handler(lambda c: c.data == "close")
