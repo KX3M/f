@@ -142,7 +142,7 @@ async def like_cmd(message: types.Message):
     try:
         r = requests.get(f"https://anish-likes.vercel.app/like?server_name=ind&uid={uid}&key=jex4rrr")
         data = r.json()
-        region = data.get("Region", "N/A")
+        region = data.get("Region", "India")
 
         if data.get("status") == 2:
             return await wait.edit_text(
