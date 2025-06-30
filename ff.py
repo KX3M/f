@@ -5,7 +5,7 @@ import requests
 import asyncio  # Make sure this is imported at the top
 import time
 
-API_TOKEN = '7829579880:AAHkQDM3rVLEX3XopISj4T0C5K2_N5q-Obs'
+API_TOKEN = '7212402737:AAEErA5IujNL__6TWYytdv7gB8uEoPTiIow'
 bot = Bot(token=API_TOKEN, parse_mode='HTML')
 dp = Dispatcher(bot)
 
@@ -48,7 +48,7 @@ def join_keyboard():
 
 def channel_button():
     return InlineKeyboardMarkup().add(
-        InlineKeyboardButton("📲 Join Channel", url=f"https://t.me/{CHANNEL_ID[1:]}")
+        InlineKeyboardButton(" Join Channel", url=f"https://t.me/{CHANNEL_ID[1:]}")
     )
 
 # DB functions
@@ -113,7 +113,7 @@ async def like_cmd(message: types.Message):
     if like_count >= 3 and not has_access:
         token = str(time.time()).replace('.', '')[-10:]
         await set_prop(f"token_{user_id}", {"token": token, "created": now})
-        verify_url = f"https://t.me/fflike0bot?start=verify_{user_id}_{token}"
+        verify_url = f"https://t.me/fflikes_Robot?start=verify_{user_id}_{token}"
 
         try:
             res = requests.get(f"https://arolinks.com/api?api=5ba1b9f950d09e04c0ff351012dacbbc2472641d&url={verify_url}")
@@ -165,19 +165,19 @@ async def like_cmd(message: types.Message):
     except Exception as e:
         await wait.edit_text(f"❌ Failed to send likes.\n<i>{e}</i>")
 
-# Token verify
-@dp.message_handler(lambda m: m.text.startswith("/start verify_"))
+# /verify (via /start verify_)
 async def verify_token(message: types.Message):
     parts = message.text.split("_")
     if len(parts) != 3:
-        return await message.reply("❌ Invalid token.")
+        return await message.reply("❌ Invalid verify link.")
     user_id, token = parts[1], parts[2]
-    data = await get_prop(f"token_{user_id}")
-    if data and data["token"] == token:
-        expiry = int(time.time() * 1000) + 6 * 60 * 60 * 1000
-        await set_prop(f"premium_{int(user_id)}", { "until": expiry })
-        return await message.reply("✅ Access Granted for 6 Hours.")
-    return await message.reply("❌ Invalid or expired token.")
+    token_data = await get_prop(f"token_{user_id}")
+    if token_data and token_data["token"] == token:
+        await set_prop(f"verified_{int(user_id)}", int(time.time() * 1000))
+        return await message.reply("✅ <b>Access Unlocked!</b>\n\nYou now have unlimited likes for 6 hours.")
+    else:
+        return await message.reply("❌ Invalid or expired token.")
+
 
 # Admin: Give Premium Command
 @dp.message_handler(commands=['givepremium'])
