@@ -213,7 +213,8 @@ async def get_player_info(message: types.Message):
         p = data.get("petInfo", {})
         s = data.get("socialInfo", {})
 
-        text = f"""<blockquote expandable><b>📋 Player Info:</b>
+        text = f"""<blockquote expandable>
+<b>📋 Player Info:</b>
 ├👤 Name: {b.get('nickname', 'N/A')}
 ├🆔 UID: {b.get('accountId', 'N/A')}
 ├🌍 Region: {b.get('region', 'N/A')}
@@ -251,9 +252,7 @@ async def get_player_info(message: types.Message):
 ├🌐 Language: {s.get('language', 'N/A').replace('Language_', '')}
 ├⏱️ Online: {s.get('timeOnline', 'N/A').replace('TimeOnline_', '')}
 ├🕰️ Active: {s.get('timeActive', 'N/A').replace('TimeActive_', '')}
-└ 📝 Signature: {s.get('signature', 'N/A').replace('[b][c][i]', '').strip()}
-</blockquote>
-
+└ 📝 Signature: {s.get('signature', 'N/A').replace('[b][c][i]', '').strip()} </blockquote>
 <b>🎗️ BOT DEVLOPER</b>
 └👑 @Metaui"""
 
