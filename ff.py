@@ -63,7 +63,8 @@ async def set_prop(key, value):
 @dp.message_handler(commands=['start'])
 async def start_cmd(message: types.Message):
     if message.text.startswith('/start verify_'):
-        
+        await verify_token(message)
+        return      
     btn = InlineKeyboardMarkup().add(
         InlineKeyboardButton("🔥 Join Group", url=GROUP_LINK),
         InlineKeyboardButton("👨‍💻 Developer", url=f"https://t.me/{DEV_USERNAME[1:]}")
