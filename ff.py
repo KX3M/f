@@ -148,7 +148,7 @@ async def like_cmd(message: types.Message):
                 f"🚫 Max Likes Reached for Today\n\n"
                 f"👤 Name: {data.get('PlayerNickname', 'N/A')}\n"
                 f"🆔 UID: {uid}\n"
-                f"🌍 Region: {region}\n"
+                f"🌍 Region: India\n"
                 f"❤️ Current Likes: {data.get('LikesNow', 'N/A')}",
                 reply_markup=vip_keyboard()
             )
