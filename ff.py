@@ -187,17 +187,14 @@ async def verify_token(message: types.Message):
 # ✅ /get Command — Simple Format: /get 8431487083
 @dp.message_handler(commands=["get"])
 async def get_player_info(message: types.Message):
-    if message.chat.type == "private":  # You can remove this check if allowed in any group
-        pass
-
     args = message.text.split()
-    if len(args) != 2:
+    if len(args) != 2 or not args[1].isdigit():
         return await message.reply("❌ Invalid format.\n✅ Use: <code>/get 8431487083</code>")
 
     uid = args[1]
-    region = "ind"  # Default region
-    processing = await message.reply("⏳ Fetching Details for UID...\nPlease wait 3 seconds...")
-    await asyncio.sleep(3)
+    region = "ind"
+    processing = await message.reply("⏳ Fetching player details... Please wait...")
+    await asyncio.sleep(2)
 
     url = f"https://fred-fire-info-gj.vercel.app/player-info?uid={uid}&region={region}"
 
@@ -206,23 +203,21 @@ async def get_player_info(message: types.Message):
             async with session.get(url) as r:
                 data = await r.json()
 
+        def unix_to_readable(ts):
+            return datetime.fromtimestamp(int(ts) / 1000).strftime('%d-%m-%Y %H:%M:%S') if ts else "N/A"
+
         b = data.get("basicInfo", {})
         c = data.get("clanBasicInfo", {})
         p = data.get("petInfo", {})
         s = data.get("socialInfo", {})
-
-        def unix_to_readable(ts):
-            from datetime import datetime
-            return datetime.fromtimestamp(int(ts / 1000)).strftime('%d-%m-%Y %H:%M:%S') if ts else "N/A"
 
         text = f"""<b>📋 Player Info:</b>
 👤 Name: {b.get('nickname', 'N/A')}
 🆔 UID: {b.get('accountId', 'N/A')}
 🌍 Region: {b.get('region', 'N/A')}
 🎮 Level: {b.get('level', 'N/A')}
-🧪 EXP: {b.get('exp', 0):,}
+🧪 EXP: {int(b.get('exp', 0)):,}
 ❤️ Likes: {b.get('liked', 'N/A')}
-📱 Type: {b.get('accountType', 'N/A')} ({b.get('releaseVersion', 'N/A')})
 🏷️ Title: {b.get('title', 'N/A')}
 🗓️ Created: {unix_to_readable(b.get('createAt', 0))}
 🔓 Last Login: {unix_to_readable(b.get('lastLoginAt', 0))}
@@ -233,7 +228,7 @@ async def get_player_info(message: types.Message):
 🏆 CS Rank: {b.get('csRank', 'N/A')} ({b.get('csRankingPoints', 0)} pts)
 🥈 Max CS: {b.get('csMaxRank', 'N/A')}
 
-<b>🎫 Extras:</b>
+<b>🎫 Extra:</b>
 🎫 Elite Pass: {"Yes ✅" if b.get('hasElitePass') else "No ❌"}
 🎖️ Badges: {b.get('badgeCnt', 0)}
 💎 Diamonds: {data.get('diamondCostRes', {}).get('diamondCost', 'N/A')}
@@ -241,15 +236,13 @@ async def get_player_info(message: types.Message):
 
 <b>🏰 Guild:</b>
 🏷️ Name: {c.get('clanName', 'N/A')}
-👑 Leader ID: {c.get('captainId', 'N/A')}
+👑 Leader: {c.get('captainId', 'N/A')}
 👥 Members: {c.get('memberNum', 0)} / {c.get('capacity', 0)}
 🔢 Level: {c.get('clanLevel', 'N/A')}
 
 <b>🐾 Pet:</b>
 🐶 Name: {p.get('name', 'N/A')}
 🎚️ Level: {p.get('level', 'N/A')}
-🎨 Skin ID: {p.get('skinId', 'N/A')}
-🧬 Skill ID: {p.get('selectedSkillId', 'N/A')}
 
 <b>🧬 Social:</b>
 🚻 Gender: {s.get('gender', 'N/A').replace('Gender_', '')}
@@ -259,13 +252,14 @@ async def get_player_info(message: types.Message):
 📝 Signature: {s.get('signature', 'N/A').replace('[b][c][i]', '').strip()}
 """
 
-        btn = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Join Channel", url="https://t.me/PythonBotz")]
-        ])
+        btn = InlineKeyboardMarkup().add(
+            InlineKeyboardButton("📢 Join Updates Channel", url="https://t.me/PythonBotz")
+        )
         await processing.edit_text(text, reply_markup=btn)
 
     except Exception as e:
-        await processing.edit_text(f"❌ Failed to fetch data.\nError: {e}")
+        await processing.edit_text(f"❌ Failed to fetch data.\nError: <code>{e}</code>")
+
         
 # Admin: Give Premium Command
 @dp.message_handler(commands=['givepremium'])
