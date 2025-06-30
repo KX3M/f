@@ -213,49 +213,52 @@ async def get_player_info(message: types.Message):
         p = data.get("petInfo", {})
         s = data.get("socialInfo", {})
 
-        text = f"""<b>📋 Player Info:</b>
-👤 Name: {b.get('nickname', 'N/A')}
-🆔 UID: {b.get('accountId', 'N/A')}
-🌍 Region: {b.get('region', 'N/A')}
-🎮 Level: {b.get('level', 'N/A')}
-🧪 EXP: {int(b.get('exp', 0)):,}
-❤️ Likes: {b.get('liked', 'N/A')}
-🏷️ Title: {b.get('title', 'N/A')}
-🗓️ Created: {unix_to_readable(b.get('createAt', 0))}
-🔓 Last Login: {unix_to_readable(b.get('lastLoginAt', 0))}
+        text = f"""<blockquote expandable><b>📋 Player Info:</b>
+├👤 Name: {b.get('nickname', 'N/A')}
+├🆔 UID: {b.get('accountId', 'N/A')}
+├🌍 Region: {b.get('region', 'N/A')}
+├🎮 Level: {b.get('level', 'N/A')}
+├🧪 EXP: {int(b.get('exp', 0)):,}
+├❤️ Likes: {b.get('liked', 'N/A')}
+├🏷️ Title: {b.get('title', 'N/A')}
+├🗓️ Created: {unix_to_readable(b.get('createAt', 0))}
+└🔓 Last Login: {unix_to_readable(b.get('lastLoginAt', 0))}
 
 <b>🏅 Rank Info:</b>
-🎖️ BR Rank: {b.get('rank', 'N/A')} ({b.get('rankingPoints', 0)} pts)
-🥇 Max BR: {b.get('maxRank', 'N/A')}
-🏆 CS Rank: {b.get('csRank', 'N/A')} ({b.get('csRankingPoints', 0)} pts)
-🥈 Max CS: {b.get('csMaxRank', 'N/A')}
+├🎖️ BR Rank: {b.get('rank', 'N/A')} ({b.get('rankingPoints', 0)} pts)
+├🥇 Max BR: {b.get('maxRank', 'N/A')}
+├🏆 CS Rank: {b.get('csRank', 'N/A')} ({b.get('csRankingPoints', 0)} pts)
+└🥈 Max CS: {b.get('csMaxRank', 'N/A')}
 
 <b>🎫 Extra:</b>
-🎫 Elite Pass: {"Yes ✅" if b.get('hasElitePass') else "No ❌"}
-🎖️ Badges: {b.get('badgeCnt', 0)}
-💎 Diamonds: {data.get('diamondCostRes', {}).get('diamondCost', 'N/A')}
-🛡️ Credit Score: {data.get('creditScoreInfo', {}).get('creditScore', 'N/A')}
+├🎫 Elite Pass: {"Yes ✅" if b.get('hasElitePass') else "No ❌"}
+├🎖️ Badges: {b.get('badgeCnt', 0)}
+├💎 Diamonds: {data.get('diamondCostRes', {}).get('diamondCost', 'N/A')}
+└🛡️ Credit Score: {data.get('creditScoreInfo', {}).get('creditScore', 'N/A')}
 
 <b>🏰 Guild:</b>
-🏷️ Name: {c.get('clanName', 'N/A')}
-👑 Leader: {c.get('captainId', 'N/A')}
-👥 Members: {c.get('memberNum', 0)} / {c.get('capacity', 0)}
-🔢 Level: {c.get('clanLevel', 'N/A')}
+├🏷️ Name: {c.get('clanName', 'N/A')}
+├👑 Leader: {c.get('captainId', 'N/A')}
+├👥 Members: {c.get('memberNum', 0)} / {c.get('capacity', 0)}
+└🔢 Level: {c.get('clanLevel', 'N/A')}
 
 <b>🐾 Pet:</b>
-🐶 Name: {p.get('name', 'N/A')}
-🎚️ Level: {p.get('level', 'N/A')}
+├🐶 Name: {p.get('name', 'N/A')}
+└🎚️ Level: {p.get('level', 'N/A')}
 
 <b>🧬 Social:</b>
-🚻 Gender: {s.get('gender', 'N/A').replace('Gender_', '')}
-🌐 Language: {s.get('language', 'N/A').replace('Language_', '')}
-⏱️ Online: {s.get('timeOnline', 'N/A').replace('TimeOnline_', '')}
-🕰️ Active: {s.get('timeActive', 'N/A').replace('TimeActive_', '')}
-📝 Signature: {s.get('signature', 'N/A').replace('[b][c][i]', '').strip()}
-"""
+├🚻 Gender: {s.get('gender', 'N/A').replace('Gender_', '')}
+├🌐 Language: {s.get('language', 'N/A').replace('Language_', '')}
+├⏱️ Online: {s.get('timeOnline', 'N/A').replace('TimeOnline_', '')}
+├🕰️ Active: {s.get('timeActive', 'N/A').replace('TimeActive_', '')}
+└ 📝 Signature: {s.get('signature', 'N/A').replace('[b][c][i]', '').strip()}
+</blockquote>
+
+<b>🎗️ BOT DEVLOPER</b>
+└👑 @Metaui"""
 
         btn = InlineKeyboardMarkup().add(
-            InlineKeyboardButton("📢 Join Updates Channel", url="https://t.me/PythonBotz")
+            InlineKeyboardButton("Join Channel", url="https://t.me/PythonBotz")
         )
         await processing.edit_text(text, reply_markup=btn)
 
