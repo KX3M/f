@@ -4,7 +4,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import requests
 import time
 
-API_TOKEN = '7212402737:AAGT2yEjUZo7WROPeeqbbBJYQEDF2m1NuQc'
+API_TOKEN = '7212402737:AAEyhlFTNXm9po5sDlssV8r-z9_Pqyi-mSg'
 bot = Bot(token=API_TOKEN, parse_mode='HTML')
 dp = Dispatcher(bot)
 
