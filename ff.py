@@ -62,6 +62,7 @@ async def set_prop(key, value):
 # /start
 @dp.message_handler(commands=['start'])
 async def start_cmd(message: types.Message):
+    if message.text.startswith('/start verify_'):
         
     btn = InlineKeyboardMarkup().add(
         InlineKeyboardButton("🔥 Join Group", url=GROUP_LINK),
@@ -170,20 +171,15 @@ async def like_cmd(message: types.Message):
 
 
 
-@dp.message_handler(lambda message: message.text.startswith("/start verify_"))
+# /verify (via /start verify_)
 async def verify_token(message: types.Message):
-    try:
-        parts = message.text.split("_")
-        if len(parts) != 3:
-            return await message.reply("❌ Invalid verification link.")
-
-        user_id, token = parts[1], parts[2]
-        token_data = await get_prop(f"token_{user_id}")
-
-        if token_data and token_data["token"] == token:
-            # Store timestamp of verified
-            await set_prop(f"verified_{int(user_id)}", int(time.time() * 1000))
-
+    parts = message.text.split("_")
+    if len(parts) != 3:
+        return await message.reply("❌ Invalid verify link.")
+    user_id, token = parts[1], parts[2]
+    token_data = await get_prop(f"token_{user_id}")
+    if token_data and token_data["token"] == token:
+        await set_prop(f"verified_{int(user_id)}", int(time.time() * 1000))
             # Send professional confirmation
             await message.reply(
                 "✅ <b>Access Unlocked Successfully!</b>\n\n"
@@ -201,6 +197,89 @@ async def verify_token(message: types.Message):
         await message.reply(f"⚠️ Something went wrong.\n<code>{str(e)}</code>")
 
 
+# ✅ /get Command — Simple Format: /get 8431487083
+@dp.message_handler(commands=["get"])
+async def get_player_info(message: types.Message):
+    if message.chat.type == "private":  # You can remove this check if allowed in any group
+        pass
+
+    args = message.text.split()
+    if len(args) != 2:
+        return await message.reply("❌ Invalid format.\n✅ Use: <code>/get 8431487083</code>")
+
+    uid = args[1]
+    region = "ind"  # Default region
+    processing = await message.reply("⏳ Fetching Details for UID...\nPlease wait 3 seconds...")
+    await asyncio.sleep(3)
+
+    url = f"https://fred-fire-info-gj.vercel.app/player-info?uid={uid}&region={region}"
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as r:
+                data = await r.json()
+
+        b = data.get("basicInfo", {})
+        c = data.get("clanBasicInfo", {})
+        p = data.get("petInfo", {})
+        s = data.get("socialInfo", {})
+
+        def unix_to_readable(ts):
+            from datetime import datetime
+            return datetime.fromtimestamp(int(ts / 1000)).strftime('%d-%m-%Y %H:%M:%S') if ts else "N/A"
+
+        text = f"""<b>📋 Player Info:</b>
+👤 Name: {b.get('nickname', 'N/A')}
+🆔 UID: {b.get('accountId', 'N/A')}
+🌍 Region: {b.get('region', 'N/A')}
+🎮 Level: {b.get('level', 'N/A')}
+🧪 EXP: {b.get('exp', 0):,}
+❤️ Likes: {b.get('liked', 'N/A')}
+📱 Type: {b.get('accountType', 'N/A')} ({b.get('releaseVersion', 'N/A')})
+🏷️ Title: {b.get('title', 'N/A')}
+🗓️ Created: {unix_to_readable(b.get('createAt', 0))}
+🔓 Last Login: {unix_to_readable(b.get('lastLoginAt', 0))}
+
+<b>🏅 Rank Info:</b>
+🎖️ BR Rank: {b.get('rank', 'N/A')} ({b.get('rankingPoints', 0)} pts)
+🥇 Max BR: {b.get('maxRank', 'N/A')}
+🏆 CS Rank: {b.get('csRank', 'N/A')} ({b.get('csRankingPoints', 0)} pts)
+🥈 Max CS: {b.get('csMaxRank', 'N/A')}
+
+<b>🎫 Extras:</b>
+🎫 Elite Pass: {"Yes ✅" if b.get('hasElitePass') else "No ❌"}
+🎖️ Badges: {b.get('badgeCnt', 0)}
+💎 Diamonds: {data.get('diamondCostRes', {}).get('diamondCost', 'N/A')}
+🛡️ Credit Score: {data.get('creditScoreInfo', {}).get('creditScore', 'N/A')}
+
+<b>🏰 Guild:</b>
+🏷️ Name: {c.get('clanName', 'N/A')}
+👑 Leader ID: {c.get('captainId', 'N/A')}
+👥 Members: {c.get('memberNum', 0)} / {c.get('capacity', 0)}
+🔢 Level: {c.get('clanLevel', 'N/A')}
+
+<b>🐾 Pet:</b>
+🐶 Name: {p.get('name', 'N/A')}
+🎚️ Level: {p.get('level', 'N/A')}
+🎨 Skin ID: {p.get('skinId', 'N/A')}
+🧬 Skill ID: {p.get('selectedSkillId', 'N/A')}
+
+<b>🧬 Social:</b>
+🚻 Gender: {s.get('gender', 'N/A').replace('Gender_', '')}
+🌐 Language: {s.get('language', 'N/A').replace('Language_', '')}
+⏱️ Online: {s.get('timeOnline', 'N/A').replace('TimeOnline_', '')}
+🕰️ Active: {s.get('timeActive', 'N/A').replace('TimeActive_', '')}
+📝 Signature: {s.get('signature', 'N/A').replace('[b][c][i]', '').strip()}
+"""
+
+        btn = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="Join Channel", url="https://t.me/PythonBotz")]
+        ])
+        await processing.edit_text(text, reply_markup=btn)
+
+    except Exception as e:
+        await processing.edit_text(f"❌ Failed to fetch data.\nError: {e}")
+        
 # Admin: Give Premium Command
 @dp.message_handler(commands=['givepremium'])
 async def give_premium(message: types.Message):
