@@ -16,7 +16,7 @@ users = db["users"]
 
 # Replace with your actual admin Telegram user IDs
 ADMIN_IDS = [7387793694]  # ← Replace with your Telegram ID
-ALLOWED_GROUP_ID = -1002422214461
+ALLOWED_GROUP_ID = -1002602441954
 GROUP_LINK = 'https://t.me/FFLikesGC'
 CHANNEL_ID = '@Drsudo'
 DEV_USERNAME = '@metaui'
