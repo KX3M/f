@@ -5,7 +5,7 @@ import requests
 import asyncio  # Make sure this is imported at the top
 import time
 
-API_TOKEN = '7212402737:AAEyhlFTNXm9po5sDlssV8r-z9_Pqyi-mSg'
+API_TOKEN = '7829579880:AAHkQDM3rVLEX3XopISj4T0C5K2_N5q-Obs'
 bot = Bot(token=API_TOKEN, parse_mode='HTML')
 dp = Dispatcher(bot)
 
@@ -18,7 +18,7 @@ users = db["users"]
 ADMIN_IDS = [7387793694]  # ← Replace with your Telegram ID
 ALLOWED_GROUP_ID = -1002422214461
 GROUP_LINK = 'https://t.me/FFLikesGC'
-CHANNEL_ID = '@SoulTyped'
+CHANNEL_ID = '@Drsudo'
 DEV_USERNAME = '@metaui'
 
 # UPI Premium Message
@@ -42,7 +42,7 @@ def vip_keyboard():
 
 def join_keyboard():
     return InlineKeyboardMarkup(row_width=2).add(
-        InlineKeyboardButton("🔥 Join Group", url=GROUP_LINK),
+        InlineKeyboardButton("🔥 Join Channel", url="t.me/pythonbotz"),
         InlineKeyboardButton("👨‍💻 Developer", url=f"https://t.me/{DEV_USERNAME[1:]}")
     )
 
@@ -113,7 +113,7 @@ async def like_cmd(message: types.Message):
     if like_count >= 3 and not has_access:
         token = str(time.time()).replace('.', '')[-10:]
         await set_prop(f"token_{user_id}", {"token": token, "created": now})
-        verify_url = f"https://t.me/fflikes_Robot?start=verify_{user_id}_{token}"
+        verify_url = f"https://t.me/fflike0bot?start=verify_{user_id}_{token}"
 
         try:
             res = requests.get(f"https://arolinks.com/api?api=5ba1b9f950d09e04c0ff351012dacbbc2472641d&url={verify_url}")
@@ -122,12 +122,16 @@ async def like_cmd(message: types.Message):
             short = verify_url
 
         return await message.reply(
-            "🚫 <b>Free like limit reached.</b>\nUnlock 6 hours access 👇",
-            reply_markup=InlineKeyboardMarkup().add(
-                InlineKeyboardButton("🔓 Unlock Free Access", url=short),
-                InlineKeyboardButton("💎 Buy Premium", callback_data="premium")
-            )
-        )
+    "🚫 <b>Your free like limit has been reached!</b>\n\n"
+    "🔓 You can unlock 6 hours of free access by completing a simple verification.\n\n"
+    "💎 Or upgrade to Premium for unlimited access and faster delivery.\n\n"
+    "👇 Choose an option below:",
+    reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton("🔓 Unlock Free Access", url=short)],
+        [InlineKeyboardButton("💎 Buy Premium", callback_data="premium")],
+        [InlineKeyboardButton("ℹ️ Tutorial", url="https://t.me/ChipsTutorial/8")]
+    ])
+)
 
     if not has_access:
         await set_prop(f"like_count_{user_id}", like_count + 1)
