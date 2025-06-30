@@ -128,8 +128,8 @@ async def like_cmd(message: types.Message):
     "👇 Choose an option below:",
     reply_markup=InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton("🔓 Unlock Free Access", url=short)],
-        [InlineKeyboardButton("💎 Buy Premium", callback_data="premium")],
-        [InlineKeyboardButton("ℹ️ Tutorial", url="https://t.me/ChipsTutorial/8")]
+        [InlineKeyboardButton("💎 Buy Premium", callback_data="premium"),
+        InlineKeyboardButton("ℹ️ Tutorial", url="https://t.me/ChipsTutorial/8")]
     ])
 )
 
