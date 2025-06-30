@@ -169,9 +169,6 @@ async def like_cmd(message: types.Message):
         await wait.edit_text(f"❌ Failed to send likes.\n<i>{e}</i>")
 
 
-
-
-
 # /verify (via /start verify_)
 async def verify_token(message: types.Message):
     parts = message.text.split("_")
@@ -181,21 +178,9 @@ async def verify_token(message: types.Message):
     token_data = await get_prop(f"token_{user_id}")
     if token_data and token_data["token"] == token:
         await set_prop(f"verified_{int(user_id)}", int(time.time() * 1000))
-            # Send professional confirmation
-            await message.reply(
-                "✅ <b>Access Unlocked Successfully!</b>\n\n"
-                "🎉 You now have <b>Unlimited Like Access</b> for the next <b>6 hours</b>.\n"
-                "⚡ Use <code>/like Your_UID</code> to send likes now.\n\n"
-                "📌 Make sure you remain in the group to keep using the bot.",
-                reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-                    [InlineKeyboardButton("🔥 Join Group", url=GROUP_LINK)],
-                    [InlineKeyboardButton("👨‍💻 Developer", url=f"https://t.me/{DEV_USERNAME[1:]}")]
-                ])
-            )
-        else:
-            await message.reply("❌ Invalid or expired token.")
-    except Exception as e:
-        await message.reply(f"⚠️ Something went wrong.\n<code>{str(e)}</code>")
+        return await message.reply("✅ <b>Access Unlocked!</b>\n\nYou now have unlimited likes for 6 hours.")
+    else:
+        return await message.reply("❌ Invalid or expired token.")
 
 
 # ✅ /get Command — Simple Format: /get 8431487083
