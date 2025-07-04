@@ -6,6 +6,8 @@ import requests
 import asyncio  # Make sure this is imported at the top
 import time
 import aiohttp
+import random
+import string
 
 
 API_TOKEN = '7212402737:AAEErA5IujNL__6TWYytdv7gB8uEoPTiIow'
@@ -121,8 +123,15 @@ async def like_cmd(message: types.Message):
         await set_prop(f"token_{user_id}", {"token": token, "created": now})
         verify_url = f"https://t.me/fflikes_Robot?start=verify_{user_id}_{token}"
 
-        try:
-            res = requests.get(f"https://arolinks.com/api?api=5ba1b9f950d09e04c0ff351012dacbbc2472641d&url={verify_url}")
+        # 🔁 Random 6-character alias like "likes_a1b2c3"
+    random_part = ''.join(random.choices(string.ascii_lowercase + string.digits, k=6))
+    alias = f"likes_{random_part}"
+
+    try:
+        res = requests.get(
+            f"https://arolinks.com/api?api=5ba1b9f950d09e04c0ff351012dacbbc2472641d"
+            f"&url={verify_url}&alias={alias}"
+        )
             short = res.json().get("shortenedUrl") or verify_url
         except:
             short = verify_url
